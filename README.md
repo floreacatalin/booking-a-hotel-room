@@ -25,7 +25,7 @@ The project consists of:
 - a Booking API (Spring Boot) server running on two (or more) instances
 - a Booking Client (Spring Boot) application with a Swagger interface, that simply acts as a client service to the Booking API - it can be viewed as the front-end used by the hotel staff   ​
 
-![Infrastructure diagram](diagrams/booking_infrastructure,png?raw=true "Infrastructure diagram")
+![Infrastructure diagram](diagrams/booking_infrastructure.png?raw=true "Infrastructure diagram")
 
 *Note*: Ideally, all these nodes and instances would run on different computers, but for the purposes of this demonstration, they are all configured to run on `localhost`.
 
