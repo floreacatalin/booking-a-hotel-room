@@ -25,7 +25,7 @@ The project consists of:
 - a Booking API (Spring Boot) server running on two (or more) instances
 - a Booking Client (Spring Boot) application with a Swagger interface, that simply acts as a client service to the Booking API - it can be viewed as the front-end used by the hotel staff   ​
 
-![Alt text](diagrams/booking_infrastructure?raw=true "Infrastructure diagram")
+![Infrastructure diagram](diagrams/booking_infrastructure,png?raw=true "Infrastructure diagram")
 
 *Note*: Ideally, all these nodes and instances would run on different computers, but for the purposes of this demonstration, they are all configured to run on `localhost`.
 
@@ -40,15 +40,15 @@ The client service calls the Booking API by connecting to Eureka, with the help 
 
 Each new Booking API server instance registers itself with Eureka and interacts with the database cluster. If one of the API servers goes down, it typically takes around 20 seconds until the Booking Client is informed by Eureka not to communicate with that server instance anymore. 
 
-Quoting from the H2 documentation, the H2 cluster consists of *two database servers *, and on each server there * is a copy of the same database. If both servers run, each database operation is executed on both computers. If one server fails (power, hardware or network failure), the other server can still continue to work. From this point on, the operations will be executed only on one server until the other server is back up.*
+Quoting from the H2 documentation, the H2 cluster consists of *two database servers*, and on each server there *is a copy of the same database. If both servers run, each database operation is executed on both computers. If one server fails (power, hardware or network failure), the other server can still continue to work. From this point on, the operations will be executed only on one server until the other server is back up.*
 
 The Eureka cluster is conceptually similar to the H2 cluster - each of its peers replicates all the registered Eureka clients, and if one of the peers dies, the other ones will take over its load. 
 
 - **Preventing race conditions**
 
-The main race condition I was concerned with was the danger of two persons succeeding to book the room for the same date(s). The database design prevents this from happening through a unique constraint placed on the DATE column of the BOOKED_DAY table. 
+The main race condition I was concerned with was the danger of two persons succeeding to book the room for the same date(s). The database design prevents this from happening through a UNIQUE constraint placed on the DATE column of the BOOKED_DAY table. 
 
-![Alt text](diagrams/booking_database?raw=true "Infrastructure diagram")
+![Database diagram](diagrams/booking_database.png?raw=true "Database diagram")
 
 If an attempted booking save/update operation conflicts with the dates of another booking, I catch the exception thrown by Hibernate, make sure it is related to the mentioned unique constraint, abort the operation and inform the client of the conflict of dates.
 
@@ -83,7 +83,7 @@ Visit [http://localhost:9999/swagger-ui/](http://localhost:9999/swagger-ui/) and
 
 The H2 database console can be accessed at [http://localhost:8081/h2-console/](http://localhost:8081/h2-console/) (the 8081 can be replaced with the port of any of the functioning API nodes). 
 
-The consoles of Eureka peers can be accessed at [http://localhost:9011/](http://localhost:9011/) and at[http://localhost:9012/](http://localhost:9012/) .
+The consoles of Eureka peers can be accessed at [http://localhost:9011/](http://localhost:9011/) and at [http://localhost:9012/](http://localhost:9012/) .
 
 ## Assumptions
 - I externalized the maximum length of stays (by default 3) and the maximum number of days one can book in advance (by default 30) into application properties (`booking.max.length` and `room.max.availability`) that can be configured before runtime.
